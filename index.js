@@ -24,17 +24,18 @@ fetch("https://api.covid19api.com/summary")
                 tr.appendChild(NodeElement);
             })
             document.querySelector("thead").appendChild(tr);
-            document.querySelector("input").addEventListener("keydown",()=>{
+            document.querySelector("input").addEventListener("keyup",()=>{
+                document.querySelector("tbody").innerHTML="";
                 let search =document.querySelector("input").value;
                 let regex = new RegExp(search,"ig")
-                document.querySelectorAll("tbody tr").forEach(element=>{
-                    if(!((element.children[0].textContent.match(regex)))){
-                        element.style.display="none"
-                    }
-                    else{
-                        element.style.display="table-row"
+                trArray.forEach(element=>{
+                    if((element.children[0].textContent.match(regex))){
+                        document.querySelector("tbody").appendChild(element)
                     }
                 })
+                if(search==''){
+                    TablePagination(tableData.currentPage,tableData.pageCount)
+                }
             })
             const tableData={
                 currentPage:1,
@@ -59,12 +60,14 @@ fetch("https://api.covid19api.com/summary")
             TablePagination(tableData.currentPage,tableData.pageCount)
             PaginationButton(Math.ceil(tableData.noOfRows/tableData.pageCount));
             document.querySelectorAll(".page").forEach(element=>{element.addEventListener("click",(event)=>{
+                console.log("hi")
                 tableData.currentPage=parseInt(event.target.dataset.btn);
                 TablePagination(tableData.currentPage,tableData.pageCount);
             })})
             document.querySelectorAll(".pageleft").forEach(element=>{element.addEventListener("click",(event)=>{
                 if(tableData.currentPage>1){
                     tableData.currentPage=tableData.currentPage-1;
+                    console.log(tableData.currentPage)
                     TablePagination(tableData.currentPage,tableData.pageCount);
                 }
 
@@ -84,6 +87,7 @@ fetch("https://api.covid19api.com/summary")
                 }
                 else{
                     tableData.pageCount=parseInt( event.target.value);
+                    console.log(tableData.currentPage,tableData.pageCount)
                     TablePagination(tableData.currentPage,tableData.pageCount);
                     PaginationButton(Math.ceil(tableData.noOfRows/tableData.pageCount));
                 }
